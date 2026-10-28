@@ -176,7 +176,7 @@ class Handler(BaseHTTPRequestHandler):
             elif path.startswith('/api/'):
                 raise ApiError('接口不存在', 404)
             else:
-                files = {'/': 'index.html', '/app.js': 'app.js', '/i18n.js': 'i18n.js', '/style.css': 'style.css'}
+                files = {'/': 'index.html', '/app.js': 'app.js', '/i18n.js': 'i18n.js', '/config.js': 'config.js', '/backend.js': 'backend.js', '/style.css': 'style.css'}
                 filename = files.get(path)
                 if not filename:
                     raise ApiError('页面不存在', 404)

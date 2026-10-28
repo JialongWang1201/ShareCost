@@ -4,11 +4,13 @@
 
 Track together. Split fairly.
 
+**Free online hosting:** [Deploy with GitHub Pages + Supabase](DEPLOY.md) ([中文步骤](DEPLOY.zh-CN.md)). The frontend and SQL migration are prepared; database initialization and Pages enablement are required before the live shared ledger works.
+
 ShareCost is a lightweight shared expense web app for friends, roommates, families, and travel groups. Each person signs in with their own account and joins the same ledger using an invite code. Inspired by iCost’s simple bookkeeping experience, with an original interface and brand. It does not connect to iCost accounts or data.
 
-## Quick start
+## Local quick start
 
-Requires **Python 3.10+**. No third-party runtime dependencies or frontend build step.
+Local Python mode requires **Python 3.10+**, with no dependency installation or frontend build step.
 
 ```sh
 git clone git@github.com:JialongWang1201/ShareCost.git
@@ -31,7 +33,7 @@ Use the **English / 中文** button in the top bar to switch languages. It is al
 
 ## Share a ledger
 
-1. Select **Log in / Sign up** and create an account with your name, email, and a password of 8–128 characters. Email is a login identifier; no verification email is sent.
+1. Select **Log in / Sign up** and create an account with your name, email, and a password of 8–128 characters. The local version uses email as a login identifier without verification. The hosted Supabase version follows your project’s email confirmation settings.
 2. Create a ledger, choose its currency, and optionally set a monthly budget.
 3. Copy the invite code from **Members** or **Invite** in the top bar.
 4. Other members create their own accounts, select **Join a ledger**, and enter the code.
@@ -43,7 +45,7 @@ For multiple devices on the **same local network**, run:
 ./start.sh --host 0.0.0.0
 ```
 
-Other devices can then visit `http://YOUR-COMPUTER-LAN-IP:8765`. Keep the computer and server running, and allow the port through your local firewall. The default host, `127.0.0.1`, permits access only from this computer. Access across different networks requires deployment to a server with HTTPS; the project does not automatically publish itself online.
+Other devices can then visit `http://YOUR-COMPUTER-LAN-IP:8765`. Keep the computer and server running, and allow the port through your local firewall. The default host, `127.0.0.1`, permits access only from this computer. Access across different networks requires deployment to a server with HTTPS; use the free GitHub Pages + Supabase setup in [DEPLOY.md](DEPLOY.md), or a server with persistent storage.
 
 Each browser profile has one login session. Use different browsers or a private window to try multiple accounts on one computer.
 
@@ -72,7 +74,7 @@ Each ledger uses a single currency, fixed at creation. There is no currency conv
 
 ## Storage and backups
 
-Real accounts and transactions are stored in **`data/sharecost.sqlite3`** and survive server restarts. Browser local storage remembers only your language and last selected ledger. Demo content and test data are not written to the real database.
+In local mode, accounts and transactions are stored in **`data/sharecost.sqlite3`** and survive server restarts. Cloud mode uses Supabase Auth and PostgreSQL instead. In local mode, browser storage remembers your language and last selected ledger. In cloud mode, the Supabase SDK also stores and refreshes the login session; account and transaction data live in Supabase. Demo content and test data are not written to the real database.
 
 To back up your data, stop the server and copy the entire `data/` directory. To move to another computer, copy the project together with that directory. The database, QA screenshots, and Python caches are excluded from Git.
 
@@ -83,6 +85,10 @@ python3 -m unittest discover -s tests -v
 node --check web/app.js
 node --check web/i18n.js
 node --test tests/i18n.test.mjs
+# Optional cloud build and PostgreSQL permission tests:
+npm ci
+npm run build
+npm test
 ```
 
 The integration test runs real HTTP requests against an isolated temporary database. It covers accounts, access control, invitations, cent rounding, amount validation, shared income, editing, deletion, concurrent settlements, and persistence across a server restart.
@@ -93,6 +99,8 @@ The optional browser test uses an installed Chromium instance with a local debug
 chromium --headless --disable-gpu --remote-debugging-port=9224 \
   --user-data-dir=/tmp/sharecost-browser-qa about:blank
 node tests/browser-qa.mjs
+# After npm run build, also check the static cloud build:
+node tests/pages-browser-qa.mjs
 ```
 
 It uses a separate temporary database and checks real forms, language switching and persistence, translated search and exports, preservation of user content, and desktop/mobile layouts. Screenshots are written to the ignored `qa/` directory. Stop the debugging browser when finished.
@@ -104,6 +112,10 @@ server.py          Python HTTP API and SQLite storage
 web/index.html     App shell
 web/app.js         UI and interactions
 web/i18n.js        English translations and language preference
+web/backend.js     Local / Supabase transport
+web/config.js      Public project configuration
+supabase/          Cloud SQL schema and authorized RPC
+DEPLOY.md          Free hosting instructions
 web/style.css      Responsive styles
 start.sh           Launcher; accepts --host and --port
 tests/             HTTP, translation, and browser checks

@@ -260,6 +260,18 @@ const english = {
   '请输入有效金额，最多两位小数，且不超过一亿元': 'Enter a valid amount with at most two decimal places, up to 100,000,000.',
   '操作未完成，请刷新后重试': 'The action could not be completed. Refresh and try again.',
   '昵称': 'Name',
+  'ShareCost · 为一起生活的人设计。数据保存在 Supabase 云端。': 'ShareCost · Made for life together. Data is stored in Supabase.',
+  '请先确认邮箱，再登录': 'Please confirm your email before logging in.',
+  '请使用已获授权的邮箱，或在 Supabase 中配置邮件发送': 'Use an authorized email address or configure email delivery in Supabase.',
+  '邮件发送次数已达上限，请稍后重试': 'The email limit has been reached. Please try again later.',
+  '注册暂未开启，请联系账本创建者': 'Signups are disabled. Please contact the ledger owner.',
+  '云端账本尚未初始化，请先运行数据库安装脚本': 'The cloud ledger is not initialized. Run the database setup script first.',
+  '请确认邮箱': 'Check your email',
+  '确认后即可登录共享账本': 'Confirm your email, then log in',
+  '请打开注册邮箱中的确认链接，然后回到这里登录。': 'Open the confirmation link in your email, then come back here to log in.',
+  '每个账本最多 100 位成员': 'Each ledger supports up to 100 members.',
+  '付款或收款人必须是账本成员': 'The payer or recipient must be a member of this ledger.',
+  '分摊成员必须属于当前账本': 'All participants must belong to this ledger.',
   '切换为英文': 'Switch to English', '切换为中文': 'Switch to Chinese', '语言': 'Language',
   '正在翻开你的账本…': 'Opening your ledger…', '操作窗口': 'Dialog'
 };

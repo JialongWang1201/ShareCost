@@ -2,3 +2,8 @@ data/
 __pycache__/
 *.pyc
 qa/
+node_modules/
+dist/
+.env
+.env.*
+!.env.example
