@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=ShareCost 共享记账
+Comment=一起记，轻松分
+Exec=/home/wjl/Desktop/ShareCost/start.sh
+Path=/home/wjl/Desktop/ShareCost
+Terminal=true
+Icon=accessories-calculator
+Categories=Office;Finance;
