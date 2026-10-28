@@ -8,7 +8,9 @@ GitHub Pages serves the frontend. Supabase Free provides authentication and pers
 
 Open the project’s [SQL Editor](https://supabase.com/dashboard/project/tzmgnrgeotahugglvces/sql/new), paste the complete contents of [`supabase/migrations/202610280001_sharecost.sql`](supabase/migrations/202610280001_sharecost.sql), and select **Run**.
 
-The migration creates a dedicated private schema and one authenticated RPC. Tables have RLS enabled and no browser grants. Every RPC checks the authenticated identity, ledger membership, and ownership before reading or changing data. All mutations of a ledger lock the same row to prevent double settlement. Repeating setup does not erase existing records. Keep `sharecost_private` out of the Data API’s exposed schemas.
+Then run [`202610280002_avoid_profile_rewrites.sql`](supabase/migrations/202610280002_avoid_profile_rewrites.sql) to prevent unchanged profile data from being rewritten on reads. Existing installations only need this second migration. Use [`storage-report.sql`](supabase/maintenance/storage-report.sql) in the SQL Editor to inspect actual application, auth, and system storage before considering further compaction.
+
+The initial migration creates a dedicated private schema and one authenticated RPC. Tables have RLS enabled and no browser grants. Every RPC checks the authenticated identity, ledger membership, and ownership before reading or changing data. All mutations of a ledger lock the same row to prevent double settlement. Repeating setup does not erase existing records. Keep `sharecost_private` out of the Data API’s exposed schemas.
 
 ## 2. Configure email confirmation redirects
 

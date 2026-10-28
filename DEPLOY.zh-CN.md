@@ -10,7 +10,9 @@
 
 [`supabase/migrations/202610280001_sharecost.sql`](supabase/migrations/202610280001_sharecost.sql)
 
-该脚本会创建独立的 `sharecost_private` schema、账本表和 `public.sharecost_api` 接口。它不删除原有记录；重复运行不会清空账本。浏览器角色没有直接读写表的权限；每个接口调用都由数据库核验当前登录身份、成员关系和操作权限。表也启用了 RLS，匿名访问不允许执行账本接口。
+随后运行 [存储优化脚本](supabase/migrations/202610280002_avoid_profile_rewrites.sql)，避免普通读取重复写入资料。已有项目仅需运行优化脚本。容量统计见 [存储说明](STORAGE.zh-CN.md)。
+
+原始安装脚本会创建独立的 `sharecost_private` schema、账本表和 `public.sharecost_api` 接口。它不删除原有记录；重复运行不会清空账本。浏览器角色没有直接读写表的权限；每个接口调用都由数据库核验当前登录身份、成员关系和操作权限。表也启用了 RLS，匿名访问不允许执行账本接口。
 
 不要把 `sharecost_private` 加入 Data API 的 exposed schemas。
 

@@ -14,7 +14,9 @@ test('Supabase SQL enforces membership, exact splits, ownership and settlements 
       $$;
       grant usage on schema auth to authenticated;`);
     const migration=await fs.readFile(new URL('../supabase/migrations/202610280001_sharecost.sql',import.meta.url),'utf8');
+    const optimization=await fs.readFile(new URL('../supabase/migrations/202610280002_avoid_profile_rewrites.sql',import.meta.url),'utf8');
     await db.exec(migration);
+    await db.exec(optimization);
     const a='10000000-0000-0000-0000-000000000001',b='20000000-0000-0000-0000-000000000002',c='30000000-0000-0000-0000-000000000003',outsider='40000000-0000-0000-0000-000000000004';
     for(const [id,name] of [[a,'Alex'],[b,'Jamie'],[c,'Sam'],[outsider,'Outsider']])
       await db.query('insert into auth.users values($1,$2,$3)',[id,name+'@example.com',JSON.stringify({name})]);
@@ -71,6 +73,7 @@ test('Supabase SQL enforces membership, exact splits, ownership and settlements 
     assert.deepEqual((await call(a,'/books/'+book)).balances,{[a]:0,[b]:0,[c]:0});
     // A repeated setup must preserve existing ledgers, entries and settlements.
     await db.exec(migration);
+    await db.exec(optimization);
     snapshot=await call(a,'/books/'+book);
     assert.equal(snapshot.entries.length,1);
     assert.equal(snapshot.settlements.length,2);

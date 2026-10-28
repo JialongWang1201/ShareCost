@@ -56,6 +56,8 @@ cd ~/Desktop/ShareCost
 
 ## 数据与备份
 
+数据库容量诊断与无效写入优化见 [存储说明](STORAGE.zh-CN.md)。已上线项目需要在 Supabase SQL Editor 运行新增的优化脚本，GitHub 的网页发布不会自动更改线上数据库。
+
 真实数据保存在 `data/sharecost.sqlite3`，重启服务后保留，不使用浏览器 localStorage 保存账单。本地模式的 localStorage 仅记住上次打开的账本和界面语言；云端模式还由 Supabase 官方 SDK 保存和刷新登录会话，账单记录保存在云端数据库中。演示账单不会写入真实数据库。
 
 备份时先停止服务，再复制整个 `data` 文件夹。迁移到其他电脑时复制整个项目即可。不要把包含真实数据的 `data` 文件夹分享到公开代码仓库。

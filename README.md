@@ -74,6 +74,8 @@ Each ledger uses a single currency, fixed at creation. There is no currency conv
 
 ## Storage and backups
 
+Database-size diagnosis and the profile-write fix are documented in [存储说明](STORAGE.zh-CN.md). Apply the new SQL migration in Supabase for an existing project; publishing the frontend does not automatically migrate the cloud database. The read-only [storage report](supabase/maintenance/storage-report.sql) separates application tables/indexes from auth and system overhead.
+
 In local mode, accounts and transactions are stored in **`data/sharecost.sqlite3`** and survive server restarts. Cloud mode uses Supabase Auth and PostgreSQL instead. In local mode, browser storage remembers your language and last selected ledger. In cloud mode, the Supabase SDK also stores and refreshes the login session; account and transaction data live in Supabase. Demo content and test data are not written to the real database.
 
 To back up your data, stop the server and copy the entire `data/` directory. To move to another computer, copy the project together with that directory. The database, QA screenshots, and Python caches are excluded from Git.
