@@ -14,7 +14,7 @@ test('Supabase SQL enforces membership, exact splits, ownership and settlements 
       $$;
       grant usage on schema auth to authenticated;`);
     const migration=await fs.readFile(new URL('../supabase/migrations/202610280001_sharecost.sql',import.meta.url),'utf8');
-    const optimization=await fs.readFile(new URL('../supabase/migrations/202610280002_avoid_profile_rewrites.sql',import.meta.url),'utf8');
+    const optimization=await fs.readFile(new URL('../supabase/migrations/202610280003_profile_rewrite_compat.sql',import.meta.url),'utf8');
     await db.exec(migration);
     await db.exec(optimization);
     const a='10000000-0000-0000-0000-000000000001',b='20000000-0000-0000-0000-000000000002',c='30000000-0000-0000-0000-000000000003',outsider='40000000-0000-0000-0000-000000000004';

@@ -10,7 +10,7 @@ try {
     create table auth.users(id uuid primary key,email text,raw_user_meta_data jsonb);
     create function auth.uid() returns uuid language sql stable as $$select null::uuid$$;`);
   await db.exec(await fs.readFile(new URL('../supabase/migrations/202610280001_sharecost.sql',import.meta.url),'utf8'));
-  await db.exec(await fs.readFile(new URL('../supabase/migrations/202610280002_avoid_profile_rewrites.sql',import.meta.url),'utf8'));
+  await db.exec(await fs.readFile(new URL('../supabase/migrations/202610280003_profile_rewrite_compat.sql',import.meta.url),'utf8'));
   await db.exec(`insert into auth.users
     select ('00000000-0000-0000-0000-'||lpad(g::text,12,'0'))::uuid,'person'||g||'@example.com','{}'::jsonb from generate_series(1,3) g;
     insert into sharecost_private.profiles select id,'Person' from auth.users;

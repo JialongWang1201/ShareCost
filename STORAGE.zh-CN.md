@@ -16,13 +16,17 @@ Supabase 的 Database size 包括 PostgreSQL 系统表、认证服务的数据�
 
 ## 已有数据库：减少无效写入
 
-执行 [`supabase/migrations/202610280002_avoid_profile_rewrites.sql`](supabase/migrations/202610280002_avoid_profile_rewrites.sql)。它只修改资料同步逻辑：昵称相同时不再写入，昵称真正改变时才更新。
+执行 [`supabase/migrations/202610280003_profile_rewrite_compat.sql`](supabase/migrations/202610280003_profile_rewrite_compat.sql)。它只修改资料同步逻辑：昵称相同时不再写入，昵称真正改变时才更新。
+
+旧的 `002` 脚本按完整文本匹配，空格、换行或大小写不同也可能使它停止。若出现 `ShareCost API differs from the expected version`，直接改用 `003`，无需重新安装或清空数据。旧文件保持原样，供已应用该版本的项目保留迁移历史。
+
+`003` 只识别两种已验证的资料同步逻辑，允许语句格式变化；字符串和注释里的示例 SQL 不参与匹配。其他接口代码、函数所有者和访问权限都保留。若新版仍提示 `Unknown profile sync logic` 或匹配数量不符，请运行 [只读程序诊断](supabase/maintenance/profile-sync-diagnostic.sql)，提供返回的程序片段供检查，不要绕过检查或重装原始 API。
 
 同一次 Run 结束后会返回简要统计：数据库总大小、账本表及索引大小、认证表大小、账单数量。需要更详细的逐表分布时，再运行上面的只读报告即可。
 
 此前普通读取也会 UPSERT 同一份资料，PostgreSQL 会产生旧行版本。修复后，普通同步不再产生这些无效更新。脚本不删除账单、不删认证记录、不删除索引，不更改访问权限，也不修改金额或分摊方式。重复执行安全；若线上函数不符合预期版本，会停止而不是覆盖未知代码。
 
-原始安装脚本保持不变。新项目依次运行 `202610280001_sharecost.sql` 和 `202610280002_avoid_profile_rewrites.sql`。如果重新运行原始安装脚本，也需要再运行优化脚本。
+原始安装脚本保持不变。新项目依次运行 `202610280001_sharecost.sql` 和 `202610280003_profile_rewrite_compat.sql`，可以跳过 `002`。已安装的项目只需运行 `003`。
 
 这项修复用于减少今后的无效写入，不保证面板立刻从 25 MB 降低。PostgreSQL 通常会通过 autovacuum 回收旧版本供后续记录复用；标准 VACUUM 一般不会把已分配空间全部返还给操作系统。这里没有运行 VACUUM FULL 或修改 Supabase 管理的系统表。
 

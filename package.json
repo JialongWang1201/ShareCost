@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "build": "node scripts/build-pages.mjs",
-    "test": "node --test tests/i18n.test.mjs tests/cloud.test.mjs tests/database.test.mjs tests/storage.test.mjs",
+    "test": "node --test tests/i18n.test.mjs tests/cloud.test.mjs tests/database.test.mjs tests/storage.test.mjs tests/storage-compat.test.mjs",
     "check:cloud": "node scripts/check-cloud.mjs",
     "measure:storage": "node scripts/measure-storage.mjs"
   },
