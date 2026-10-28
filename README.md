@@ -1,72 +1,113 @@
-# ShareCost · 一起记，轻松分
+# ShareCost
 
-参考 iCost 的轻量记账体验，专为电脑和手机浏览器制作的中文共享记账应用。独立项目，不与 iCost 账号或数据互通。
+**English** | [简体中文](README.zh-CN.md)
 
-## 启动
+Track together. Split fairly.
 
-只需要 Python 3.10 或更新版本，无需安装依赖。
+ShareCost is a lightweight shared expense web app for friends, roommates, families, and travel groups. Each person signs in with their own account and joins the same ledger using an invite code. Inspired by iCost’s simple bookkeeping experience, with an original interface and brand. It does not connect to iCost accounts or data.
+
+## Quick start
+
+Requires **Python 3.10+**. No third-party runtime dependencies or frontend build step.
 
 ```sh
-cd ~/Desktop/ShareCost
+git clone git@github.com:JialongWang1201/ShareCost.git
+cd ShareCost
 ./start.sh
 ```
 
-用浏览器打开 **http://127.0.0.1:8765**。关闭终端或按 Ctrl+C 可停止服务。也可以双击项目中的「启动记账.desktop」（桌面环境如提示，请选择允许启动）。
+Open **http://127.0.0.1:8765** in your browser. Press **Ctrl+C** in the terminal to stop the server. Alternatively, run `python3 server.py`.
 
-## 多人一起使用
+The Linux desktop launcher `启动记账.desktop` uses the original installation path, `/home/wjl/Desktop/ShareCost`. Update its `Exec` and `Path` fields if you install elsewhere, or use the terminal commands above.
 
-1. 点击「登录 / 注册」，使用邮箱、昵称和至少 8 位的密码创建账号。邮箱作为登录名，不发送验证邮件。
-2. 创建账本，选择币种，可选填月预算。
-3. 在「账本成员」或右上角「邀请成员」复制邀请码。
-4. 伙伴注册自己的账号，选择「加入已有账本」，输入邀请码。
-5. 所有成员可以查看同一本账、添加账单；账单记录者和账本创建者可以修改或删除账单。预算和邀请码由创建者管理。
+## English and Chinese
 
-**同一个局域网的不同设备**：启动时运行 `./start.sh --host 0.0.0.0`，其他人在浏览器访问 `http://这台电脑的局域网IP:8765`。需要这台电脑保持开机、服务保持运行，网络允许访问此端口。默认启动仅允许本机访问。跨网络长期使用需要将项目部署到有 HTTPS 的服务器；本项目没有自动发布到公网。
+Use the **English / 中文** button in the top bar to switch languages. It is also available on the first-login screen before you create a ledger.
 
-一个浏览器会保存一个登录会话。测试不同账号可以使用普通窗口和隐私窗口，或使用不同浏览器。
+- The initial language follows your browser’s language; your choice is remembered on that browser.
+- Navigation, forms, categories, dates, charts, messages, and CSV column names follow the selected language.
+- Switching languages keeps your current ledger, month, and filters. It does not change stored transactions or amounts.
+- Your ledger names, member names, and notes remain exactly as entered. Only sample content and interface labels are translated.
 
-## 已有功能
+## Share a ledger
 
-- 独立注册、登录、退出，密码使用 PBKDF2 哈希，HttpOnly 会话。
-- 多账本、邀请码加入、邀请码更换、每 15 秒自动刷新（页面可见且未打开表单时）。
-- 支出 / 收入、日期、分类、备注、付款 / 收款成员。
-- 全部或部分成员按人数均摊，或自定义每个人的金额。
-- 按分存储金额，均摊余数按所选成员的顺序逐分分配，总额始终一致。
-- 全部历史账单的成员净额、转账建议、实际结算记录，防止重复超额结算。
-- 按月收支统计、分类占比、每日趋势、月预算。
-- 搜索、收入 / 支出筛选、CSV 导出（包含各成员分摊明细）。
-- 桌面 / 手机自适应布局，明确标识的只读演示账本。
+1. Select **Log in / Sign up** and create an account with your name, email, and a password of 8–128 characters. Email is a login identifier; no verification email is sent.
+2. Create a ledger, choose its currency, and optionally set a monthly budget.
+3. Copy the invite code from **Members** or **Invite** in the top bar.
+4. Other members create their own accounts, select **Join a ledger**, and enter the code.
+5. All members can view and add transactions. An entry’s creator or the ledger owner can edit or delete it. The owner manages the budget and invite code.
 
-## 分钱规则
+For multiple devices on the **same local network**, run:
 
-支出：付款人先垫付，所选成员承担费用。收入：收款人先收到，所选成员按份额享有收入。个人工资等收入只勾选本人。
+```sh
+./start.sh --host 0.0.0.0
+```
 
-例如 A 为 A/B/C 支付 100 元，均摊得到 A 33.34、B 33.33、C 33.33；B 和 C 分别向 A 转 33.33 元。结算金额基于**全部历史账单**计算，不受当前月份或搜索条件影响。
+Other devices can then visit `http://YOUR-COMPUTER-LAN-IP:8765`. Keep the computer and server running, and allow the port through your local firewall. The default host, `127.0.0.1`, permits access only from this computer. Access across different networks requires deployment to a server with HTTPS; the project does not automatically publish itself online.
 
-结算只记录已经在线下发生的转账，不执行支付。仅转账双方或账本创建者可以确认。保存过结算后仍可修改历史账单，系统会按修改后的账单重新计算净额，必要时生成新的结算建议。
+Each browser profile has one login session. Use different browsers or a private window to try multiple accounts on one computer.
 
-每本账使用一种币种，不进行汇率换算；不同币种可建立不同账本。预算为每月相同的账本总支出目标。
+## Features
 
-## 数据与备份
+- Separate accounts, PBKDF2 password hashing, and HttpOnly sessions.
+- Multiple shared ledgers with invite codes and code rotation.
+- Automatic sync every 15 seconds while the page is visible and no dialog is open.
+- Income and expense entries with dates, categories, notes, and payer or recipient selection.
+- Equal or custom splits among all or selected members.
+- Integer-cent arithmetic with exact allocation of rounding remainders.
+- All-time member balances, suggested transfers, and settlement history, with protection against duplicate overpayment records.
+- Monthly totals, category breakdowns, daily spending charts, and budgets.
+- Search, income/expense filters, and CSV exports with each member’s share.
+- Responsive desktop and mobile layouts, English/Chinese switching, and a clearly marked read-only demo.
 
-真实数据保存在 `data/sharecost.sqlite3`，重启服务后保留，不使用浏览器 localStorage 保存账单。localStorage 仅记住上次打开的账本。演示账单不会写入真实数据库。
+## How splitting works
 
-备份时先停止服务，再复制整个 `data` 文件夹。迁移到其他电脑时复制整个项目即可。不要把包含真实数据的 `data` 文件夹分享到公开代码仓库。
+For an **expense**, the payer advances the money and selected members bear their shares. For **income**, the recipient receives the money and selected members are entitled to their shares. Select only yourself for personal income, such as your salary.
 
-## 验证
+For example, if Alex pays 100.00 for Alex, Jamie, and Sam, an equal split allocates 33.34, 33.33, and 33.33. Jamie and Sam each owe Alex 33.33. Remainders are assigned one cent at a time in the order of selected members.
+
+Settlement suggestions use **all historical transactions**, regardless of the selected month or search filters. A settlement records a transfer already made outside the app; it does not execute a payment. Only the payer, recipient, or ledger owner can confirm it. Editing a historical transaction recalculates balances and may create new suggested transfers, even if an earlier balance was settled.
+
+Each ledger uses a single currency, fixed at creation. There is no currency conversion; create separate ledgers for different currencies. The monthly budget is the same total expense target for every month.
+
+## Storage and backups
+
+Real accounts and transactions are stored in **`data/sharecost.sqlite3`** and survive server restarts. Browser local storage remembers only your language and last selected ledger. Demo content and test data are not written to the real database.
+
+To back up your data, stop the server and copy the entire `data/` directory. To move to another computer, copy the project together with that directory. The database, QA screenshots, and Python caches are excluded from Git.
+
+## Validation
 
 ```sh
 python3 -m unittest discover -s tests -v
 node --check web/app.js
+node --check web/i18n.js
+node --test tests/i18n.test.mjs
 ```
 
-测试使用临时独立数据库，验证真实 HTTP 接口：账号、权限隔离、邀请、余数分摊、金额校验、收入分配、更新和删除、结算及数据重启持久性。
+The integration test runs real HTTP requests against an isolated temporary database. It covers accounts, access control, invitations, cent rounding, amount validation, shared income, editing, deletion, concurrent settlements, and persistence across a server restart.
 
-## 文件
+The optional browser test uses an installed Chromium instance with a local debugging endpoint at port `9224`:
 
-- `server.py`：Python 标准库 HTTP 后端和 SQLite 数据库。
-- `web/`：无需打包的 HTML / CSS / JavaScript 前端。
-- `start.sh`：本机启动脚本，支持 `--host`、`--port`。
-- `tests/`：集成验证。
+```sh
+chromium --headless --disable-gpu --remote-debugging-port=9224 \
+  --user-data-dir=/tmp/sharecost-browser-qa about:blank
+node tests/browser-qa.mjs
+```
 
-设计参考：[iCost 官方网站](https://www.icostapp.com/)。使用原创 ShareCost 品牌与界面，未复制 iCost 资源。
+It uses a separate temporary database and checks real forms, language switching and persistence, translated search and exports, preservation of user content, and desktop/mobile layouts. Screenshots are written to the ignored `qa/` directory. Stop the debugging browser when finished.
+
+## Project structure
+
+```text
+server.py          Python HTTP API and SQLite storage
+web/index.html     App shell
+web/app.js         UI and interactions
+web/i18n.js        English translations and language preference
+web/style.css      Responsive styles
+start.sh           Launcher; accepts --host and --port
+tests/             HTTP, translation, and browser checks
+README.zh-CN.md    Chinese documentation
+```
+
+Design reference: [iCost](https://www.icostapp.com/). ShareCost uses original branding and UI assets.
